@@ -1,7 +1,8 @@
 class vector_store:
     def __init__(self, collection_name: str = "job"):
         """
-        must check if collection exists
+        must check if `collection_name` collection exists
+        "job" collection is default
             if not -> create
             if does -> load into memory
         """
@@ -97,6 +98,7 @@ class vector_store:
         returns tuple representing the question and answer
         (question, answer)
         """
+
         results = self.collection.query(
             query_texts=[question],
             include=["documents", "metadatas"],
