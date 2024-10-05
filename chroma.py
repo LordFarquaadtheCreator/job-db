@@ -1,5 +1,5 @@
 class vector_store:
-    def __init__(self, collection_name: str = None):
+    def __init__(self, collection_name: str = "job"):
         """
         must check if collection exists
             if not -> create
@@ -12,12 +12,16 @@ class vector_store:
         self.CONFIDENCE_THRESHOLD = 0.7
 
         if not os.path.isdir("vector_store/"):
-            self.setup()
+            self.setup(collection_name)
         else:
             self.client = chromadb.PersistentClient(path="./vector_store")
-            self.collection = self.client.get_collection("job")
 
-    def setup(self):
+        try:
+            self.collection = self.client.get_collection(collection_name)
+        except chromadb.errors.InvalidCollectionException:
+            self.collection = self.client.create_collection(collection_name)
+
+    def setup(self, collection_name: str):
         """
         creates new client and collection
         default client name "vector_store"
@@ -33,7 +37,7 @@ class vector_store:
 
         self.client = chromadb.PersistentClient(path="./vector_store")
         self.collection = self.client.create_collection(
-            "job", metadata="collection of job application questions"
+            collection_name, metadata="collection of job application questions"
         )
 
     def add_new_question(self, question: str, answer: str, company: str):
@@ -75,7 +79,7 @@ class vector_store:
 
         self.collection.update(ids=[uid], metadatas=new_metadata)
 
-    def add_question(self, question: str, answer: str, company: str = None):
+    def add_question(self, question: str, answer: str, company: str):
         """
         will check if question similiar to previously answered question
             if yes, add onto the existing question's metadata
@@ -102,3 +106,15 @@ class vector_store:
         answer = results["metadatas"].pop().pop()
 
         return (question, answer)
+
+    def get_client(self):
+        """
+        returns reference to client
+        """
+        return self.client
+
+    def get_collection(self):
+        """
+        returns reference to collection
+        """
+        return self.collection
