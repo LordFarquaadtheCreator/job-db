@@ -63,6 +63,9 @@ class vector_store:
             n_results=1,
         )
 
+        if len(results["distances"].pop()) == 0:
+            return None
+
         distance = results["distances"].pop().pop()
         uid = results["ids"].pop().pop()
 
