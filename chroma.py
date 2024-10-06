@@ -49,7 +49,11 @@ class vector_store:
         """
 
         metadata = {company: answer}
-        self.collection.add(ids=[company], documents=[question], metadatas=metadata)
+        self.collection.add(
+            ids=[" ".join([company, question])],
+            documents=[question],
+            metadatas=metadata,
+        )
 
     def question_exists(self, question: str):
         """
@@ -63,10 +67,11 @@ class vector_store:
             n_results=1,
         )
 
-        if len(results["distances"].pop()) == 0:
+        distance = results["distances"].pop()
+        if len(distance) == 0:
             return None
 
-        distance = results["distances"].pop().pop()
+        distance = distance.pop()
         uid = results["ids"].pop().pop()
 
         if self.CONFIDENCE_THRESHOLD >= distance:
