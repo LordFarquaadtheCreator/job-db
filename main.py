@@ -35,6 +35,13 @@ if __name__ == "__main__":
         nargs=1,
     )
 
+    parser.add_argument(
+        "-l",
+        "--links",
+        help="get github and linkedin links",
+        action="store_true"
+    )
+
     args = parser.parse_args()
 
     if args.add_question:
@@ -51,4 +58,10 @@ if __name__ == "__main__":
             print(color.BOLD, key, color.END)
             print(color.ITALICS, value, color.END)
 
+        exit(0)
+
+    if args.links:
+        print(
+            "LinkedIn: https://www.linkedin.com/in/fahadfaruqi42/\nGitHub: https://github.com/LordFarquaadtheCreator"
+        )
         exit(0)
