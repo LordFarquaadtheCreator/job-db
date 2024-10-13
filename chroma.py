@@ -11,11 +11,12 @@ class vector_store:
         import os
 
         self.CONFIDENCE_THRESHOLD = 0.7
+        self.STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/vector_store"
 
-        if not os.path.isdir("vector_store/"):
+        if not os.path.isdir(self.STORE_PATH):
             self.setup(collection_name)
         else:
-            self.client = chromadb.PersistentClient(path="./vector_store")
+            self.client = chromadb.PersistentClient(path=self.STORE_PATH)
 
         try:
             self.collection = self.client.get_collection(collection_name)
@@ -36,7 +37,7 @@ class vector_store:
 
         import chromadb
 
-        self.client = chromadb.PersistentClient(path="./vector_store")
+        self.client = chromadb.PersistentClient(path=self.STORE_PATH)
         self.collection = self.client.create_collection(
             collection_name, metadata="collection of job application questions"
         )
